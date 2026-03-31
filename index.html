@@ -9,38 +9,27 @@
     <meta name="theme-color" content="#2563eb">
     
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
-  <div class="app-wrapper">
-        
+<div id="view-main" class="app-wrapper active">
         <div class="card stats-card">
             <h2>Lifetime Statistic</h2>
-            <div class="stat-row">
-                <span>Gesamt erstellte QR-Codes:</span>
-                <span id="stat-count">---</span>
-            </div>
-            <div class="stat-row">
-                <span>Gesamtgewicht (kg):</span>
-                <span id="stat-weight">---</span>
-            </div>
-            <div class="stat-row">
-                <span>Letzter Eintrag:</span>
-                <span id="stat-date">---</span>
-            </div>
+            <div class="stat-row"><span>Gesamt erstellte QR-Codes:</span><span id="stat-count">---</span></div>
+            <div class="stat-row"><span>Gesamtgewicht (kg):</span><span id="stat-weight">---</span></div>
+            <div class="stat-row"><span>Letzter Eintrag:</span><span id="stat-date">---</span></div>
         </div>
 
         <div class="card create-card">
-            
             <div class="input-group">
                 <label for="gewicht">Gewicht (kg)</label>
                 <input type="number" id="gewicht" placeholder="z.B. 12.5" step="0.1">
             </div>
-
             <div class="input-group">
                 <label for="datum">Datum</label>
                 <input type="date" id="datum">
             </div>
-
             <div class="input-group">
                 <label for="qualitaet">Qualität</label>
                 <select id="qualitaet">
@@ -50,14 +39,39 @@
                     <option value="niedrig">Minderwertig</option>
                 </select>
             </div>
-
             <button id="btn-create" class="btn btn-neon-green">Create QR Code</button>
         </div>
-
         <button id="btn-scan" class="btn btn-blue">Scan QR Code</button>
-
     </div>
 
+    <div id="view-qr" class="app-wrapper" style="display: none;">
+        <div class="card">
+            <h2>Dein QR-Code</h2>
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <canvas id="qr-canvas"></canvas>
+            </div>
+            <button id="btn-save-qr" class="btn btn-neon-green">In Galerie speichern</button>
+            <button id="btn-back-from-qr" class="btn btn-blue" style="margin-top: 16px;">Zurück</button>
+        </div>
+    </div>
+
+    <div id="view-scanner" class="app-wrapper" style="display: none;">
+        <div class="card">
+            <h2>Code Scannen</h2>
+            <div id="reader" style="width: 100%; margin-bottom: 20px;"></div>
+            <button id="btn-cancel-scan" class="btn btn-blue">Abbrechen</button>
+        </div>
+    </div>
+
+    <div id="view-scan-result" class="app-wrapper" style="display: none;">
+        <div class="card">
+            <h2>Gescannte Daten</h2>
+            <div class="stat-row"><span>Gewicht:</span><span id="res-gewicht"></span></div>
+            <div class="stat-row"><span>Datum:</span><span id="res-datum"></span></div>
+            <div class="stat-row"><span>Qualität:</span><span id="res-qualitaet"></span></div>
+            <button id="btn-back-from-res" class="btn btn-blue" style="margin-top: 24px;">Zurück zum Menü</button>
+        </div>
+    </div>
     <script src="app.js"></script>
     
 </body>
