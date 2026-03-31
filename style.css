@@ -122,3 +122,12 @@ input:focus, select:focus {
     color: #ffffff;
     box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
 }
+
+/* Ansichten-Steuerung */
+.app-wrapper {
+    display: none; /* Standardmäßig alle verstecken */
+}
+
+.app-wrapper.active {
+    display: flex; /* Nur die aktive anzeigen */
+}
