@@ -119,3 +119,102 @@ function onScanSuccess(decodedText, decodedResult) {
 function onScanFailure(error) {
     // Wird kontinuierlich aufgerufen, solange kein Code erkannt wird. Kann ignoriert werden.
 }
+
+// --- Navigation Logik ---
+document.getElementById('nav-home').addEventListener('click', () => {
+    switchView('view-main');
+    document.getElementById('nav-home').classList.add('active');
+    document.getElementById('nav-history').classList.remove('active');
+});
+
+document.getElementById('nav-history').addEventListener('click', () => {
+    switchView('view-history');
+    document.getElementById('nav-history').classList.add('active');
+    document.getElementById('nav-home').classList.remove('active');
+    renderHistory(); // Lade die Historie neu, wenn der Tab geöffnet wird
+});
+
+// --- LocalStorage & History Logik ---
+const HISTORY_KEY = 'papier_app_history';
+
+function getHistory() {
+    const historyData = localStorage.getItem(HISTORY_KEY);
+    return historyData ? JSON.parse(historyData) : [];
+}
+
+function saveToHistory() {
+    // Hole die aktuellen Eingabewerte, die zur Generierung genutzt wurden
+    const gewicht = document.getElementById('gewicht').value;
+    const datum = document.getElementById('datum').value;
+    const qualitaet = document.getElementById('qualitaet').value;
+    const canvas = document.getElementById('qr-canvas');
+    const qrImageBase64 = canvas.toDataURL("image/png"); // Das fertige Bild für die Card
+
+    const newEntry = {
+        id: Date.now(),
+        gewicht: parseFloat(gewicht),
+        datum: datum,
+        qualitaet: qualitaet,
+        qrImage: qrImageBase64
+    };
+
+    const history = getHistory();
+    history.unshift(newEntry); // Neues Element ganz oben einfügen
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+    alert("Erfolgreich in der Historie gespeichert!");
+    updateDashboardStats(); // Statistik auf Home aktualisieren
+    
+    // Nach dem Speichern zurück zum Home-Screen
+    switchView('view-main');
+}
+
+// Event-Listener für den neuen "In Historie speichern"-Button
+document.getElementById('btn-save-history').addEventListener('click', saveToHistory);
+
+// Historie auf dem Bildschirm rendern
+function renderHistory() {
+    const historyList = document.getElementById('history-list');
+    const history = getHistory();
+
+    historyList.innerHTML = ''; // Liste leeren
+
+    if (history.length === 0) {
+        historyList.innerHTML = '<p style="text-align: center; color: #6b7280; font-size: 0.9rem;">Noch keine Einträge vorhanden.</p>';
+        return;
+    }
+
+    history.forEach(entry => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        card.innerHTML = `
+            <div class="history-info">
+                <span class="badge">${entry.qualitaet.toUpperCase()}</span>
+                <span class="detail">${entry.gewicht} kg</span>
+                <span class="detail" style="color: #9ca3af; font-size: 0.75rem;">${entry.datum}</span>
+            </div>
+            <img src="${entry.qrImage}" class="history-qr-img" alt="QR Code">
+        `;
+        historyList.appendChild(card);
+    });
+}
+
+// Statistik auf dem Home-Screen aktualisieren
+function updateDashboardStats() {
+    const history = getHistory();
+    const totalCodes = history.length;
+    
+    // Berechne das Gesamtgewicht
+    const totalWeight = history.reduce((sum, entry) => sum + entry.gewicht, 0);
+    
+    // Letztes Datum holen (da wir mit unshift() arbeiten, ist index 0 das aktuellste)
+    const lastDate = totalCodes > 0 ? history[0].datum : null;
+
+    // Nutze die Funktion, die wir im vorherigen Schritt vorbereitet haben
+    updateStatistics(totalCodes, totalWeight, lastDate);
+}
+
+// Beim allerersten Laden der App die Statistik initialisieren
+document.addEventListener('DOMContentLoaded', () => {
+    updateDashboardStats();
+});
