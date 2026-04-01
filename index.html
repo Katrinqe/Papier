@@ -80,6 +80,22 @@
             </div>
     </div>
 
+    <div id="view-history-detail" class="app-wrapper">
+        <div class="card">
+            <h2>Eintrag Details</h2>
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <img id="detail-qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 1px solid #e5e7eb;">
+            </div>
+            <div class="stat-row"><span>Gewicht:</span><span id="detail-gewicht"></span></div>
+            <div class="stat-row"><span>Datum:</span><span id="detail-datum"></span></div>
+            <div class="stat-row"><span>Qualität:</span><span id="detail-qualitaet"></span></div>
+
+            <button id="btn-detail-save" class="btn btn-neon-green" style="margin-top: 24px;">In Galerie speichern</button>
+            <button id="btn-detail-delete" class="btn btn-neon-green" style="margin-top: 12px; background-color: #ef4444; color: white; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);">Eintrag löschen</button>
+            <button id="btn-detail-back" class="btn btn-blue" style="margin-top: 12px;">Zurück</button>
+        </div>
+    </div>
+     
     <nav class="bottom-nav">
         <div class="nav-item active" id="nav-home">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
