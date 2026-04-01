@@ -53,19 +53,20 @@ body {
     overflow: hidden; /* Schneidet das Licht an den Rändern der Karte ab */
 }
 
-/* Das edle, warm-weiße Licht direkt HINTER dem Glas */
+/* Das edle, warm-weiße Licht direkt HINTER dem Glas (Jetzt animiert) */
 .card::before {
     content: '';
     position: absolute;
-    top: -30px;
-    left: -30px;
+    top: -10%;
+    left: -10%;
     width: 160px;
     height: 160px;
-    background: rgba(255, 252, 240, 0.4); /* Warm-Weiß */
-    filter: blur(45px); /* Macht es zu einem diffusen Schein */
+    background: rgba(255, 252, 240, 0.4);
+    filter: blur(45px);
     border-radius: 50%;
-    z-index: -1; /* Zieht das Licht hinter den Inhalt und die Glas-Ebene */
+    z-index: -1;
     pointer-events: none;
+    animation: floatGlow 12s infinite ease-in-out; /* NEU: Aktiviert die fließende Bewegung */
 }
 
 h2 {
@@ -242,13 +243,12 @@ input:focus, select:focus {
     transform: scale(0.97);
 }
 
-/* Etwas kleineres Licht für die Historien-Karten */
+/* Etwas kleineres Licht für die Historien-Karten (Jetzt animiert) */
 .history-card::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: -20px;
-    transform: translateY(-50%);
+    top: -10%;
+    left: -10%;
     width: 90px;
     height: 90px;
     background: rgba(255, 252, 240, 0.35);
@@ -256,6 +256,7 @@ input:focus, select:focus {
     border-radius: 50%;
     z-index: -1;
     pointer-events: none;
+    animation: floatGlow 8s infinite ease-in-out reverse; /* NEU: Etwas schneller und asynchron zu den Hauptkarten */
 }
 
 .history-info {
@@ -291,4 +292,13 @@ input:focus, select:focus {
     border: 1px solid rgba(255, 255, 255, 0.06);
     background-color: white; /* Der QR Code an sich braucht weißen Hintergrund */
     padding: 3px;
+}
+
+
+/* Animation für das wandernde Licht */
+@keyframes floatGlow {
+    0% { top: -10%; left: -10%; }
+    33% { top: 60%; left: 70%; }
+    66% { top: 70%; left: -10%; }
+    100% { top: -10%; left: -10%; }
 }
