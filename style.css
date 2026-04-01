@@ -5,21 +5,39 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Blockiert das Scrollen der gesamten Seite */
+    overscroll-behavior-y: none; /* Verhindert den Gummiband-Effekt (Bouncen) */
+    touch-action: manipulation; /* Blockiert zusätzliches Doppeltipp-Zoomen */
+}
+
 body {
     background-color: #ffffff;
     color: #1f2937;
-    padding: 20px;
-    padding-bottom: 90px; /* NEU: Platz für die Navigation */
     display: flex;
     justify-content: center;
+    /* Padding wurde entfernt und in den App-Wrapper verschoben */
 }
 
 .app-wrapper {
     width: 100%;
     max-width: 400px;
-    display: flex;
+    height: 100%;
+    padding: 20px;
+    padding-bottom: 90px; /* Platz für die feste Bottom-Nav */
+    display: none; /* Standardmäßig alle verstecken */
     flex-direction: column;
     gap: 20px;
+    
+    /* Hier wird das Scrollen exklusiv für den Inhalt aktiviert */
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; /* Butterweiches, natives Scrollen auf iOS */
+}
+
+.app-wrapper.active {
+    display: flex; /* Nur die aktive Ansicht anzeigen */
 }
 
 .card {
