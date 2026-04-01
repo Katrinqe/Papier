@@ -5,65 +5,75 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+/* 1. Basis-Setup & Verriegelung (Unverändert für Funktionalität) */
 html, body {
     height: 100%;
     width: 100%;
-    overflow: hidden; /* Blockiert das Scrollen der gesamten Seite */
-    overscroll-behavior-y: none; /* Verhindert den Gummiband-Effekt (Bouncen) */
-    touch-action: manipulation; /* Blockiert zusätzliches Doppeltipp-Zoomen */
+    overflow: hidden;
+    overscroll-behavior-y: none;
+    touch-action: manipulation;
 }
 
+/* 2. Hintergrund: Tiefschwarz (edler Kontrast) */
 body {
-    background-color: #ffffff;
-    color: #1f2937;
+    background-color: #000000; /* Reines Schwarz für maximalen Kontrast */
+    color: #f3f4f6; /* Sehr helles Grau für Texte (besser lesbar als reines Weiß) */
     display: flex;
     justify-content: center;
-    /* Padding wurde entfernt und in den App-Wrapper verschoben */
 }
 
+/* 3. App-Wrapper (Unverändert für Scroll-Verhalten) */
 .app-wrapper {
     width: 100%;
     max-width: 400px;
     height: 100%;
     padding: 20px;
-    padding-bottom: 90px; /* Platz für die feste Bottom-Nav */
-    display: none; /* Standardmäßig alle verstecken */
+    padding-bottom: 90px;
+    display: none;
     flex-direction: column;
     gap: 20px;
-    
-    /* Hier wird das Scrollen exklusiv für den Inhalt aktiviert */
-    overflow-y: auto; 
-    -webkit-overflow-scrolling: touch; /* Butterweiches, natives Scrollen auf iOS */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .app-wrapper.active {
-    display: flex; /* Nur die aktive Ansicht anzeigen */
+    display: flex;
 }
 
+/* 4. Glassmorphismus Cards mit warmem Glow dahinter */
 .card {
-    background: #ffffff;
+    /* Glas-Effekt: Semitransparenter schwarzer Hintergrund */
+    background: rgba(20, 20, 20, 0.4); 
+    backdrop-filter: blur(16px); /* Butterweicher Blur dahinter */
+    -webkit-backdrop-filter: blur(16px);
+    
     padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    border: 1px solid #f3f4f6;
+    border-radius: 16px; /* Etwas weichere Ecken */
+    
+    /* Der edle, diffuse, warm-weiße Glow dahinter */
+    /* Farbe: rgba(255, 252, 240, 0.12) - Elfenbein/Warm-Weiß, sehr dezent */
+    box-shadow: 0 0 60px rgba(255, 252, 240, 0.12);
+    
+    /* Hauchdünner, heller Rand für die Kante */
+    border: 1px solid rgba(255, 255, 255, 0.06); 
 }
 
 h2 {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     margin-bottom: 20px;
-    color: #111827;
+    color: #ffffff;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.7px;
     font-weight: 700;
 }
 
-/* Lifetime Statistic */
+/* 5. Lifetime Statistic (Angepasst an Dunkel) */
 .stat-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
-    font-size: 0.95rem;
-    color: #4b5563;
+    font-size: 0.9rem;
+    color: #e5e7eb; /* Hellgrau */
 }
 
 .stat-row:last-child {
@@ -72,68 +82,84 @@ h2 {
 
 .stat-row span:last-child {
     font-weight: 600;
-    color: #111827;
+    color: #ffffff; /* Werte in Reinweiß */
 }
 
-/* Formular-Felder */
+/* 6. Formular-Felder (Integrierter Glass-Style) */
 .input-group {
     margin-bottom: 16px;
 }
 
 label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #374151;
+    color: #d1d5db;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 input, select {
     width: 100%;
-    height: 48px; /* Identische Größe erzwungen */
-    padding: 0 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    height: 48px;
+    padding: 0 16px;
+    
+    /* Integrierter Glass-Style für die Felder */
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    
     font-size: 1rem;
-    background-color: #f9fafb;
+    color: #ffffff;
     transition: all 0.2s ease;
-    appearance: none; /* Entfernt die Standard-Pfeile im Select für ein sauberes Design */
+    appearance: none;
+}
+
+/* Safari fix für Select-Text */
+select {
+    color: #ffffff;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23AAAAAA%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095.1c3.6%203.6%205.4%207.8%205.4%2012.8%200-5-1.8-9.3-5.4-12.9z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat, repeat;
+    background-position: right 14px top 50%, 0 0;
+    background-size: 12px auto, 100%;
+    padding-right: 36px;
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: #2563eb;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    /* Akzentuiert mit Neon-Grün, passt perfekt zum dunklen Look */
+    border-color: rgba(57, 255, 20, 0.5); 
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
 }
 
-/* Button Basis */
+/* 7. Button Basis & Varianten (Angepasst für Dark) */
 .btn {
     width: 100%;
     height: 52px;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
     transition: transform 0.1s, box-shadow 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.7px;
 }
 
 .btn:active {
     transform: scale(0.98);
 }
 
-/* Button Varianten */
 .btn-neon-green {
     background-color: #39ff14;
-    color: #000000; /* Schwarz für perfekten Kontrast */
+    color: #000000;
     margin-top: 16px;
-    box-shadow: 0 4px 15px rgba(57, 255, 20, 0.2);
+    box-shadow: 0 4px 15px rgba(57, 255, 20, 0.25);
 }
 
 .btn-blue {
@@ -142,36 +168,33 @@ input:focus, select:focus {
     box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
 }
 
-/* Ansichten-Steuerung */
-.app-wrapper {
-    display: none; /* Standardmäßig alle verstecken */
-}
-
-.app-wrapper.active {
-    display: flex; /* Nur die aktive anzeigen */
-}
-
-/* Bottom Navigation */
+/* 8. Bottom Navigation (Symmetrisch an Cards angepasst) */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #ffffff;
-    border-top: 1px solid #e5e7eb;
+    
+    /* Glas-Effekt dahinter (stärker für Lesbarkeit) */
+    background: rgba(10, 10, 10, 0.85); 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: space-around;
-    padding: 12px 0;
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+    padding: 16px 0;
+    padding-bottom: max(16px, env(safe-area-inset-bottom)); /* Support für Notch-Handys */
     z-index: 1000;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .nav-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    color: #9ca3af;
+    gap: 6px;
+    color: #9ca3af; /* Muted Grau */
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: 600;
@@ -179,45 +202,60 @@ input:focus, select:focus {
 }
 
 .nav-item.active {
-    color: #2563eb;
+    /* Nutzen wir Neon-Grün als aktiven Akzent auf Schwarz */
+    color: #39ff14; 
 }
 
 .nav-item svg {
     transition: stroke 0.2s ease;
 }
 
-/* History Card */
+/* 9. History Elements (Angepasst an Dark) */
 .history-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    background: rgba(25, 25, 25, 0.5); /* Etwas dunkler für die Kachel */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
     padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+    
+    /* Subtilerer Glow für die kleine Kachel */
+    box-shadow: 0 4px 15px rgba(255, 252, 240, 0.03);
+}
+
+.history-card:active {
+    transform: scale(0.97);
+    background: rgba(40, 40, 40, 0.6);
 }
 
 .history-info {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .history-info .badge {
-    background: #e0e7ff;
-    color: #3730a3;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
+    /* Dunklerer Badge-Background */
+    background: rgba(55, 48, 163, 0.3); 
+    color: #c7d2fe; /* Hellerer Indigoblau-Text */
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
     font-weight: bold;
     display: inline-block;
     width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .history-info .detail {
-    font-size: 0.85rem;
-    color: #4b5563;
+    font-size: 1rem;
+    color: #ffffff;
     font-weight: 600;
 }
 
@@ -225,5 +263,7 @@ input:focus, select:focus {
     width: 70px;
     height: 70px;
     border-radius: 8px;
-    border: 1px solid #f3f4f6;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: white; /* Der QR Code an sich braucht weißen Hintergrund */
+    padding: 3px;
 }
