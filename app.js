@@ -14,6 +14,29 @@ if ('serviceWorker' in navigator) {
     });
 }
 
+// --- Security & Verschlüsselung ---
+const SECRET_KEY_NAME = 'papier_app_secret_key';
+let appSecretKey = localStorage.getItem(SECRET_KEY_NAME);
+
+// Temporäre lokale Schlüsselgenerierung (wird später durch Firebase-Abruf ersetzt)
+if (!appSecretKey) {
+    appSecretKey = CryptoJS.lib.WordArray.random(256/8).toString();
+    localStorage.setItem(SECRET_KEY_NAME, appSecretKey);
+}
+
+function encryptData(data) {
+    return CryptoJS.AES.encrypt(data, appSecretKey).toString();
+}
+
+function decryptData(cipherText) {
+    try {
+        const bytes = CryptoJS.AES.decrypt(cipherText, appSecretKey);
+        return bytes.toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+        return null;
+    }
+}
+
 // --- Neue UI Logik ---
 
 // Diese Funktion füttern wir später mit den echten Firebase-Daten
@@ -42,16 +65,19 @@ document.getElementById('btn-create').addEventListener('click', () => {
         return;
     }
 
-    // Daten als kompaktes JSON-Objekt vorbereiten
+// Daten als kompaktes JSON-Objekt vorbereiten
     const dataObj = { g: gewicht, d: datum, q: qualitaet };
     const dataString = JSON.stringify(dataObj);
+
+    // NEU: Daten symmetrisch verschlüsseln
+    const encryptedData = encryptData(dataString);
 
     // QR Code generieren
     currentQR = new QRious({
         element: document.getElementById('qr-canvas'),
-        value: dataString,
+        value: encryptedData, // NEU: Verschlüsselten String in den Code schreiben
         size: 250,
-        level: 'H' // Hohe Fehlerkorrektur, gut für Ausdrucke
+        level: 'H'
     });
 
     switchView('view-qr');
@@ -101,8 +127,15 @@ function onScanSuccess(decodedText, decodedResult) {
     // Scanner sofort stoppen, wenn erfolgreich
     html5QrcodeScanner.stop().then(() => {
         try {
-            // Versuchen, die Daten aus dem QR-Code zu entpacken
-            const dataObj = JSON.parse(decodedText);
+            // NEU: Zuerst den gescannten Text entschlüsseln
+            const decryptedText = decryptData(decodedText);
+            
+            if (!decryptedText) {
+                throw new Error("Entschlüsselung fehlgeschlagen.");
+            }
+
+            // Daten aus dem entschlüsselten Text entpacken
+            const dataObj = JSON.parse(decryptedText);
             
             document.getElementById('res-gewicht').textContent = `${dataObj.g} kg`;
             document.getElementById('res-datum').textContent = dataObj.d;
@@ -110,7 +143,7 @@ function onScanSuccess(decodedText, decodedResult) {
             
             switchView('view-scan-result');
         } catch (e) {
-            alert("Ungültiger QR-Code gescannt.");
+            alert("Sicherheitswarnung: Dieser QR-Code kann mit dem aktuellen Gerät/Schlüssel nicht gelesen werden oder ist ungültig.");
             switchView('view-main');
         }
     }).catch(err => console.error(err));
