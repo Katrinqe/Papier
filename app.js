@@ -172,7 +172,7 @@ function saveToHistory() {
 // Event-Listener für den neuen "In Historie speichern"-Button
 document.getElementById('btn-save-history').addEventListener('click', saveToHistory);
 
-// Historie auf dem Bildschirm rendern
+// Historie auf dem Bildschirm rendern (Aktualisiert für Klickbarkeit)
 function renderHistory() {
     const historyList = document.getElementById('history-list');
     const history = getHistory();
@@ -187,6 +187,9 @@ function renderHistory() {
     history.forEach(entry => {
         const card = document.createElement('div');
         card.className = 'history-card';
+        // Klick-Event für die Detail-Ansicht
+        card.onclick = () => openHistoryDetail(entry.id);
+        
         card.innerHTML = `
             <div class="history-info">
                 <span class="badge">${entry.qualitaet.toUpperCase()}</span>
@@ -217,4 +220,60 @@ function updateDashboardStats() {
 // Beim allerersten Laden der App die Statistik initialisieren
 document.addEventListener('DOMContentLoaded', () => {
     updateDashboardStats();
+});
+
+// --- History Detail Logik ---
+let currentDetailId = null;
+
+function openHistoryDetail(id) {
+    const history = getHistory();
+    const entry = history.find(e => e.id === id);
+    if (!entry) return;
+
+    currentDetailId = id; // ID für Speichern/Löschen merken
+    
+    // Daten in die Detail-Ansicht laden
+    document.getElementById('detail-qr-img').src = entry.qrImage;
+    document.getElementById('detail-gewicht').textContent = `${entry.gewicht} kg`;
+    document.getElementById('detail-datum').textContent = entry.datum;
+    document.getElementById('detail-qualitaet').textContent = entry.qualitaet.toUpperCase();
+
+    switchView('view-history-detail');
+}
+
+// Button: Zurück
+document.getElementById('btn-detail-back').addEventListener('click', () => {
+    switchView('view-history');
+});
+
+// Button: In Galerie speichern
+document.getElementById('btn-detail-save').addEventListener('click', () => {
+    const history = getHistory();
+    const entry = history.find(e => e.id === currentDetailId);
+    if (!entry) return;
+
+    const link = document.createElement('a');
+    link.href = entry.qrImage;
+    link.download = `papier-qr-${entry.datum}.png`;
+    link.click();
+});
+
+// Button: Eintrag löschen
+document.getElementById('btn-detail-delete').addEventListener('click', () => {
+    const confirmDelete = confirm("Möchtest du diesen Eintrag wirklich löschen?");
+    if (confirmDelete) {
+        let history = getHistory();
+        // Den spezifischen Eintrag herausfiltern
+        history = history.filter(e => e.id !== currentDetailId);
+        
+        // Aktualisierte Historie speichern
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        
+        // Statistik auf dem Dashboard sofort aktualisieren
+        updateDashboardStats();
+        
+        // Zurück zur Historien-Ansicht und Liste neu laden
+        renderHistory();
+        switchView('view-history');
+    }
 });
