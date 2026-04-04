@@ -5,7 +5,6 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* 1. Basis-Setup & Verriegelung (Unverändert für Funktionalität) */
 html, body {
     height: 100%;
     width: 100%;
@@ -14,15 +13,13 @@ html, body {
     touch-action: manipulation;
 }
 
-/* 2. Hintergrund: Tiefschwarz (edler Kontrast) */
 body {
-    background-color: #000000; /* Reines Schwarz für maximalen Kontrast */
-    color: #f3f4f6; /* Sehr helles Grau für Texte (besser lesbar als reines Weiß) */
+    background-color: #ffffff; /* Reines Weiß */
+    color: #1f2937;
     display: flex;
     justify-content: center;
 }
 
-/* 3. App-Wrapper (Unverändert für Scroll-Verhalten) */
 .app-wrapper {
     width: 100%;
     max-width: 400px;
@@ -40,113 +37,72 @@ body {
     display: flex;
 }
 
-/* --- Haupt-Cards --- */
+/* Karten mit dezentem grünen Glow */
 .card {
-    position: relative;
-    background: rgba(25, 25, 25, 0.3);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background: #ffffff;
     padding: 24px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    z-index: 1;
-    overflow: hidden;
-}
-
-/* Das dynamische Licht hinter dem Glas (Reagiert auf Neigung) */
-.card::before {
-    content: '';
-    position: absolute;
-    /* Nutzt die Variablen vom JavaScript, standardmäßig 50% (Mitte) */
-    top: var(--light-y, 50%);
-    left: var(--light-x, 50%);
-    transform: translate(-50%, -50%);
-    width: 280px; /* Groß genug, um die Karte sanft auszuleuchten */
-    height: 280px;
-    background: radial-gradient(circle, rgba(255, 252, 240, 0.12) 0%, rgba(255, 252, 240, 0) 70%);
-    z-index: -1;
-    pointer-events: none;
-    transition: top 0.2s ease-out, left 0.2s ease-out; /* Glättet das Sensor-Zittern */
+    border: 1px solid #f3f4f6;
+    /* Der dezente grüne Glow: #dcfce7 ist ein sehr helles, warmes Grün */
+    box-shadow: 0 10px 30px rgba(220, 252, 231, 0.6); 
 }
 
 h2 {
     font-size: 1.1rem;
     margin-bottom: 20px;
-    color: #ffffff;
+    color: #111827;
     text-transform: uppercase;
     letter-spacing: 0.7px;
     font-weight: 700;
 }
 
-/* 5. Lifetime Statistic (Angepasst an Dunkel) */
+/* Statistik & Formulare */
 .stat-row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
-    font-size: 0.9rem;
-    color: #e5e7eb; /* Hellgrau */
-}
-
-.stat-row:last-child {
-    margin-bottom: 0;
+    font-size: 0.95rem;
+    color: #4b5563;
 }
 
 .stat-row span:last-child {
     font-weight: 600;
-    color: #ffffff; /* Werte in Reinweiß */
+    color: #111827;
 }
 
-/* 6. Formular-Felder (Integrierter Glass-Style) */
 .input-group {
     margin-bottom: 16px;
 }
 
 label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #d1d5db;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: #374151;
 }
 
 input, select {
     width: 100%;
     height: 48px;
     padding: 0 16px;
-    
-    /* Integrierter Glass-Style für die Felder */
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
     border-radius: 10px;
-    
     font-size: 1rem;
-    color: #ffffff;
+    color: #111827;
     transition: all 0.2s ease;
     appearance: none;
 }
 
-/* Safari fix für Select-Text */
-select {
-    color: #ffffff;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23AAAAAA%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095.1c3.6%203.6%205.4%207.8%205.4%2012.8%200-5-1.8-9.3-5.4-12.9z%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat, repeat;
-    background-position: right 14px top 50%, 0 0;
-    background-size: 12px auto, 100%;
-    padding-right: 36px;
-}
-
 input:focus, select:focus {
     outline: none;
-    /* Akzentuiert mit Neon-Grün, passt perfekt zum dunklen Look */
-    border-color: rgba(57, 255, 20, 0.5); 
-    background-color: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
+    border-color: #39ff14;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(57, 255, 20, 0.1);
 }
 
-/* 7. Button Basis & Varianten (Angepasst für Dark) */
+/* Buttons */
 .btn {
     width: 100%;
     height: 52px;
@@ -171,34 +127,29 @@ input:focus, select:focus {
     background-color: #39ff14;
     color: #000000;
     margin-top: 16px;
-    box-shadow: 0 4px 15px rgba(57, 255, 20, 0.25);
+    box-shadow: 0 4px 15px rgba(57, 255, 20, 0.2);
 }
 
 .btn-blue {
     background-color: #2563eb;
     color: #ffffff;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
 }
 
-/* 8. Bottom Navigation (Symmetrisch an Cards angepasst) */
+/* Navigation */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    
-    /* Glas-Effekt dahinter (stärker für Lesbarkeit) */
-    background: rgba(10, 10, 10, 0.85); 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: #ffffff;
+    border-top: 1px solid #f3f4f6;
     display: flex;
     justify-content: space-around;
     padding: 16px 0;
-    padding-bottom: max(16px, env(safe-area-inset-bottom)); /* Support für Notch-Handys */
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
     z-index: 1000;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .nav-item {
@@ -206,92 +157,42 @@ input:focus, select:focus {
     flex-direction: column;
     align-items: center;
     gap: 6px;
-    color: #9ca3af; /* Muted Grau */
+    color: #9ca3af;
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: 600;
-    transition: color 0.2s ease;
 }
 
 .nav-item.active {
-    /* Nutzen wir Neon-Grün als aktiven Akzent auf Schwarz */
-    color: #39ff14; 
+    color: #2563eb;
 }
 
-.nav-item svg {
-    transition: stroke 0.2s ease;
-}
-
-/* --- Historien-Cards --- */
+/* Historie */
 .history-card {
-    position: relative;
-    background: rgba(25, 25, 25, 0.3);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: #ffffff;
+    border: 1px solid #f3f4f6;
     border-radius: 14px;
     padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    z-index: 1;
-    overflow: hidden;
-}
-
-.history-card:active {
-    transform: scale(0.97);
-}
-
-.history-card::before {
-    content: '';
-    position: absolute;
-    top: var(--light-y, 50%);
-    left: var(--light-x, 50%);
-    transform: translate(-50%, -50%);
-    width: 160px;
-    height: 160px;
-    background: radial-gradient(circle, rgba(255, 252, 240, 0.10) 0%, rgba(255, 252, 240, 0) 70%);
-    z-index: -1;
-    pointer-events: none;
-    transition: top 0.2s ease-out, left 0.2s ease-out;
-}
-
-.history-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    box-shadow: 0 4px 15px rgba(220, 252, 231, 0.4);
 }
 
 .history-info .badge {
-    /* Dunklerer Badge-Background */
-    background: rgba(55, 48, 163, 0.3); 
-    color: #c7d2fe; /* Hellerer Indigoblau-Text */
+    background: #dcfce7;
+    color: #166534;
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 0.7rem;
     font-weight: bold;
-    display: inline-block;
-    width: fit-content;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.history-info .detail {
-    font-size: 1rem;
-    color: #ffffff;
-    font-weight: 600;
 }
 
 .history-qr-img {
     width: 70px;
     height: 70px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background-color: white; /* Der QR Code an sich braucht weißen Hintergrund */
-    padding: 3px;
+    border: 1px solid #f3f4f6;
 }
-
-
-
