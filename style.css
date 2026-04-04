@@ -37,16 +37,38 @@ body {
     display: flex;
 }
 
-/* Karten mit dezentem grünen Glow */
+/* Haupt-Cards */
 .card {
-    /* Der Glow ist jetzt direkt der Hintergrund der Karte: Ein sanftes Neon-Grün aus der Mitte, das weich in Weiß übergeht */
-    background: radial-gradient(circle at 50% 50%, rgba(57, 255, 20, 0.06) 0%, #ffffff 70%);
+    position: relative; /* Wichtig für das Licht dahinter */
+    /* Milchiges Glas: Halbtransparentes Weiß */
+    background: rgba(255, 255, 255, 0.65); 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
     padding: 24px;
     border-radius: 16px;
-    border: 1px solid #f3f4f6;
-    /* Ein ganz normaler, grauer Schatten, damit die weiße Karte auf dem weißen Body nicht verschwindet */
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04); 
+    border: 1px solid rgba(255, 255, 255, 0.9); /* Helle Glaskante */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05); /* Leichter Schatten für Tiefe */
+    
+    z-index: 1;
+    overflow: hidden; /* Hält das Licht exakt innerhalb der Karte */
 }
+
+/* Das blaue Ambiente-Licht HINTER dem Glas */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 250px;
+    /* Ein edles Blau, das nach außen hin unsichtbar wird */
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0) 70%);
+    z-index: -1; /* Zieht das Licht hinter den Inhalt und das Glas */
+    pointer-events: none;
+}
+
 h2 {
     font-size: 1.1rem;
     margin-bottom: 20px;
@@ -167,17 +189,40 @@ input:focus, select:focus {
     color: #2563eb;
 }
 
+/* Historien-Cards */
 .history-card {
-    /* Identischer, aber etwas dezenterer Hintergrund-Glow für die Listen-Elemente */
-    background: radial-gradient(circle at 50% 50%, rgba(57, 255, 20, 0.04) 0%, #ffffff 80%);
-    border: 1px solid #f3f4f6;
+    position: relative;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
     border-radius: 14px;
     padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    z-index: 1;
+    overflow: hidden;
+}
+
+.history-card:active {
+    transform: scale(0.98);
+}
+
+/* Das dezente blaue Licht für die kleinen Karten */
+.history-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.20) 0%, rgba(37, 99, 235, 0) 70%);
+    z-index: -1;
+    pointer-events: none;
 }
 .history-info .badge {
     background: #dcfce7;
