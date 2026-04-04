@@ -39,19 +39,22 @@ body {
 
 /* Haupt-Cards */
 .card {
-    position: relative; /* Wichtig für das Licht dahinter */
-    /* Milchiges Glas: Halbtransparentes Weiß */
-    background: rgba(255, 255, 255, 0.65); 
+    /* Diagonaler "Frosted Glass" Verlauf: Startet fast deckend weiß und fadet in ein extrem sanftes, eisiges Blau aus */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(235, 244, 255, 0.5) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     
     padding: 24px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.9); /* Helle Glaskante */
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05); /* Leichter Schatten für Tiefe */
     
-    z-index: 1;
-    overflow: hidden; /* Hält das Licht exakt innerhalb der Karte */
+    /* Echte Glaskanten: Oben/Links fangen sie das Licht (weiß), Unten/Rechts sind sie transparent */
+    border-top: 1px solid rgba(255, 255, 255, 1);
+    border-left: 1px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Das blaue Ambiente-Licht fällt weich nach außen auf den weißen Hintergrund */
+    box-shadow: 0 12px 40px rgba(37, 99, 235, 0.08); 
 }
 
 /* Das blaue Ambiente-Licht HINTER dem Glas */
@@ -189,40 +192,28 @@ input:focus, select:focus {
     color: #2563eb;
 }
 
-/* Historien-Cards */
 .history-card {
-    position: relative;
-    background: rgba(255, 255, 255, 0.65);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(235, 244, 255, 0.5) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    
+    border-top: 1px solid rgba(255, 255, 255, 1);
+    border-left: 1px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    
     border-radius: 14px;
     padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-    z-index: 1;
-    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.06);
+    transition: transform 0.1s ease;
 }
 
 .history-card:active {
     transform: scale(0.98);
-}
-
-/* Das dezente blaue Licht für die kleinen Karten */
-.history-card::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 140px;
-    height: 140px;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.20) 0%, rgba(37, 99, 235, 0) 70%);
-    z-index: -1;
-    pointer-events: none;
 }
 .history-info .badge {
     background: #dcfce7;
