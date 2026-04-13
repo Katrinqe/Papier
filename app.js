@@ -40,10 +40,11 @@ function decryptData(cipherText) {
 // --- Neue UI Logik ---
 
 // Diese Funktion füttern wir später mit den echten Firebase-Daten
+// --- Neue UI Logik ---
+
 function updateStatistics(totalCodes, totalWeight, lastDate) {
-    document.getElementById('stat-count').textContent = totalCodes > 0 ? totalCodes : '---';
-    document.getElementById('stat-weight').textContent = totalWeight > 0 ? totalWeight.toFixed(1) : '---';
-    document.getElementById('stat-date').textContent = lastDate ? lastDate : '---';
+    // Die HTML-Felder für die Statistik wurden durch das Header-Bild ersetzt.
+    // Diese Funktion bleibt leer, damit die App beim Speichern/Löschen nicht abstürzt.
 }
 
 // --- View Management ---
