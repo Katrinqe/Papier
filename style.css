@@ -204,14 +204,13 @@ input:focus, select:focus {
 /* Header Bild */
 .header-image {
     width: calc(100% + 40px); /* Gleicht die 20px Rand links und rechts aus */
-    margin: -20px -20px 0 -20px; /* Zieht das Bild ganz nach oben und an die Seiten */
-    height: 140px; /* "Länglich" - Passe die Zahl an, wenn es höher/flacher sein soll */
-    object-fit: cover; /* Verhindert, dass das Bild gequetscht wird */
+    margin: -20px -20px 0 -20px; /* Zieht das Bild zwingend über das Wrapper-Padding */
+    height: 140px; 
+    object-fit: cover; 
     
-    /* Optional: Macht die unteren Ecken leicht rund, damit es sich weicher in die App einfügt */
-    border-bottom-left-radius: 16px; 
-    border-bottom-right-radius: 16px;
+    /* Erzwingt: Oben eckig (0), unten abgerundet (16px) - auch symmetrisch auf beiden Seiten! */
+    border-radius: 0 0 16px 16px; 
     
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Leichter Schatten nach unten */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
     display: block;
 }
