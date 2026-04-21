@@ -296,11 +296,16 @@ function renderHistory() {
 let currentDetailId = null;
 
 
+function openHistoryDetail(id) {
     const history = getHistory();
     const entry = history.find(e => e.id === id);
     if (!entry) return;
 
     currentDetailId = id; 
+    
+    // NEU: Name und Batterie ins HTML laden
+    document.getElementById('detail-name').textContent = entry.name || "Pack";
+    document.getElementById('detail-battery').textContent = entry.battery ? `Level ${entry.battery}` : "---";
     
     document.getElementById('detail-qr-img').src = entry.qrImage;
     document.getElementById('detail-gewicht').textContent = `${entry.gewicht} kg`;
