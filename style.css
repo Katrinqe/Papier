@@ -122,3 +122,70 @@ html, body {
 .input-group { margin-bottom: 16px; }
 label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
 input, select { width: 100%; height: 48px; padding: 0 16px; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; appearance: none; }
+
+
+/* --- Neuer Create Flow Styles --- */
+.editable-title {
+    width: 100%;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #111827;
+    text-align: center;
+    border: none;
+    background: transparent;
+    margin-bottom: 24px;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+.editable-title:focus {
+    border-bottom: 2px solid #39ff14;
+}
+
+.create-grid {
+    display: grid;
+    grid-template-columns: 48px 1fr; /* Batterie 48px breit, Rest für Formular */
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.battery-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 4px;
+    background: #f9fafb;
+    padding: 6px;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    height: 100%;
+}
+
+.battery-segment {
+    flex: 1;
+    background: #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Neon-Grün, wenn markiert */
+.battery-segment.active {
+    background: #39ff14;
+    box-shadow: 0 0 8px rgba(57, 255, 20, 0.4);
+}
+
+.action-buttons-row {
+    display: flex;
+    align-items: center;
+}
+
+.btn-icon {
+    width: 52px;
+    height: 52px;
+    background-color: #f3f4f6;
+    color: #374151;
+    font-size: 1.2rem;
+    padding: 0;
+    flex-shrink: 0;
+}
