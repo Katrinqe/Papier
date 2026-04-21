@@ -154,18 +154,38 @@ function onScanFailure(error) {
     // Wird kontinuierlich aufgerufen, solange kein Code erkannt wird. Kann ignoriert werden.
 }
 
-// --- Navigation Logik ---
-document.getElementById('nav-home').addEventListener('click', () => {
-    switchView('view-main');
-    document.getElementById('nav-home').classList.add('active');
-    document.getElementById('nav-history').classList.remove('active');
-});
-
-document.getElementById('nav-history').addEventListener('click', () => {
+// --- Dashboard Navigation ---
+function openHistoryFromDashboard() {
+    renderHistory();
     switchView('view-history');
-    document.getElementById('nav-history').classList.add('active');
-    document.getElementById('nav-home').classList.remove('active');
-    renderHistory(); // Lade die Historie neu, wenn der Tab geöffnet wird
+}
+
+// --- Statistik & Dashboard Logik ---
+function updateDashboardStats() {
+    const history = getHistory();
+    const totalCodes = history.length;
+    
+    // Berechne Gesamtgewicht
+    const totalWeight = history.reduce((sum, entry) => sum + entry.gewicht, 0);
+    
+    // Berechne verkauftes Gewicht (Sucht nach einem "sold" flag)
+    const totalSold = history
+        .filter(entry => entry.sold === true)
+        .reduce((sum, entry) => sum + entry.gewicht, 0);
+
+    // Die neuen HTML-IDs aus dem Dashboard befüllen
+    const countElement = document.getElementById('stat-count');
+    const weightElement = document.getElementById('stat-weight');
+    const soldElement = document.getElementById('stat-sold');
+
+    if (countElement) countElement.textContent = totalCodes;
+    if (weightElement) weightElement.textContent = totalWeight.toFixed(1);
+    if (soldElement) soldElement.textContent = totalSold.toFixed(1);
+}
+
+// Beim allerersten Laden der App die Statistik initialisieren
+document.addEventListener('DOMContentLoaded', () => {
+    updateDashboardStats();
 });
 
 // --- LocalStorage & History Logik ---
@@ -177,41 +197,44 @@ function getHistory() {
 }
 
 function saveToHistory() {
-    // Hole die aktuellen Eingabewerte, die zur Generierung genutzt wurden
     const gewicht = document.getElementById('gewicht').value;
     const datum = document.getElementById('datum').value;
     const qualitaet = document.getElementById('qualitaet').value;
     const canvas = document.getElementById('qr-canvas');
-    const qrImageBase64 = canvas.toDataURL("image/png"); // Das fertige Bild für die Card
+    
+    if (!gewicht || !datum || !qualitaet) {
+        alert("Bitte fülle alle Felder aus.");
+        return;
+    }
+
+    const qrImageBase64 = canvas.toDataURL("image/png");
 
     const newEntry = {
         id: Date.now(),
         gewicht: parseFloat(gewicht),
         datum: datum,
         qualitaet: qualitaet,
-        qrImage: qrImageBase64
+        qrImage: qrImageBase64,
+        sold: false // Standardmäßig ist neues Papier noch nicht verkauft
     };
 
     const history = getHistory();
-    history.unshift(newEntry); // Neues Element ganz oben einfügen
+    history.unshift(newEntry);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 
     alert("Erfolgreich in der Historie gespeichert!");
-    updateDashboardStats(); // Statistik auf Home aktualisieren
-    
-    // Nach dem Speichern zurück zum Home-Screen
-    switchView('view-main');
+    updateDashboardStats(); 
+    switchView('view-main'); // Springt direkt sauber zurück ins Dashboard
 }
 
-// Event-Listener für den neuen "In Historie speichern"-Button
 document.getElementById('btn-save-history').addEventListener('click', saveToHistory);
 
-// Historie auf dem Bildschirm rendern (Aktualisiert für Klickbarkeit)
+// --- Historie Rendern ---
 function renderHistory() {
     const historyList = document.getElementById('history-list');
     const history = getHistory();
 
-    historyList.innerHTML = ''; // Liste leeren
+    historyList.innerHTML = ''; 
 
     if (history.length === 0) {
         historyList.innerHTML = '<p style="text-align: center; color: #6b7280; font-size: 0.9rem;">Noch keine Einträge vorhanden.</p>';
@@ -221,12 +244,14 @@ function renderHistory() {
     history.forEach(entry => {
         const card = document.createElement('div');
         card.className = 'history-card';
-        // Klick-Event für die Detail-Ansicht
         card.onclick = () => openHistoryDetail(entry.id);
+        
+        // Wenn es verkauft ist, markieren wir es optisch leicht anders (z.B. grauer Badge)
+        const badgeColor = entry.sold ? 'background: #f3f4f6; color: #9ca3af;' : 'background: #dcfce7; color: #166534;';
         
         card.innerHTML = `
             <div class="history-info">
-                <span class="badge">${entry.qualitaet.toUpperCase()}</span>
+                <span class="badge" style="${badgeColor}">${entry.sold ? 'VERKAUFT' : entry.qualitaet.toUpperCase()}</span>
                 <span class="detail">${entry.gewicht} kg</span>
                 <span class="detail" style="color: #9ca3af; font-size: 0.75rem;">${entry.datum}</span>
             </div>
@@ -236,26 +261,6 @@ function renderHistory() {
     });
 }
 
-// Statistik auf dem Home-Screen aktualisieren
-function updateDashboardStats() {
-    const history = getHistory();
-    const totalCodes = history.length;
-    
-    // Berechne das Gesamtgewicht
-    const totalWeight = history.reduce((sum, entry) => sum + entry.gewicht, 0);
-    
-    // Letztes Datum holen (da wir mit unshift() arbeiten, ist index 0 das aktuellste)
-    const lastDate = totalCodes > 0 ? history[0].datum : null;
-
-    // Nutze die Funktion, die wir im vorherigen Schritt vorbereitet haben
-    updateStatistics(totalCodes, totalWeight, lastDate);
-}
-
-// Beim allerersten Laden der App die Statistik initialisieren
-document.addEventListener('DOMContentLoaded', () => {
-    updateDashboardStats();
-});
-
 // --- History Detail Logik ---
 let currentDetailId = null;
 
@@ -264,23 +269,21 @@ function openHistoryDetail(id) {
     const entry = history.find(e => e.id === id);
     if (!entry) return;
 
-    currentDetailId = id; // ID für Speichern/Löschen merken
+    currentDetailId = id; 
     
-    // Daten in die Detail-Ansicht laden
     document.getElementById('detail-qr-img').src = entry.qrImage;
     document.getElementById('detail-gewicht').textContent = `${entry.gewicht} kg`;
     document.getElementById('detail-datum').textContent = entry.datum;
-    document.getElementById('detail-qualitaet').textContent = entry.qualitaet.toUpperCase();
+    document.getElementById('detail-qualitaet').textContent = entry.sold ? 'VERKAUFT' : entry.qualitaet.toUpperCase();
 
     switchView('view-history-detail');
 }
 
-// Button: Zurück
+// Buttons in der Detail-Ansicht
 document.getElementById('btn-detail-back').addEventListener('click', () => {
     switchView('view-history');
 });
 
-// Button: In Galerie speichern
 document.getElementById('btn-detail-save').addEventListener('click', () => {
     const history = getHistory();
     const entry = history.find(e => e.id === currentDetailId);
@@ -292,23 +295,15 @@ document.getElementById('btn-detail-save').addEventListener('click', () => {
     link.click();
 });
 
-// Button: Eintrag löschen
 document.getElementById('btn-detail-delete').addEventListener('click', () => {
     const confirmDelete = confirm("Möchtest du diesen Eintrag wirklich löschen?");
     if (confirmDelete) {
         let history = getHistory();
-        // Den spezifischen Eintrag herausfiltern
         history = history.filter(e => e.id !== currentDetailId);
-        
-        // Aktualisierte Historie speichern
         localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
         
-        // Statistik auf dem Dashboard sofort aktualisieren
         updateDashboardStats();
-        
-        // Zurück zur Historien-Ansicht und Liste neu laden
         renderHistory();
         switchView('view-history');
     }
 });
-
