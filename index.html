@@ -60,40 +60,63 @@
         </div>
     </div>
 
-    <div id="view-create-form" class="app-wrapper">
+   <div id="view-create-form" class="app-wrapper">
         <div class="card">
-            <h2>Neues Pack erstellen</h2>
-            <div class="input-group">
-                <label for="gewicht">Gewicht (kg)</label>
-                <input type="number" id="gewicht" placeholder="z.B. 12.5" step="0.1">
+            <input type="text" id="pack-name" class="editable-title" value="">
+            
+            <div class="create-grid">
+                <div class="battery-container">
+                    <div class="battery-segment" data-val="6"></div>
+                    <div class="battery-segment" data-val="5"></div>
+                    <div class="battery-segment" data-val="4"></div>
+                    <div class="battery-segment" data-val="3"></div>
+                    <div class="battery-segment" data-val="2"></div>
+                    <div class="battery-segment" data-val="1"></div>
+                </div>
+                
+                <div class="form-container">
+                    <div class="input-group">
+                        <label for="gewicht">Gewicht (kg)</label>
+                        <input type="number" id="gewicht" placeholder="z.B. 12.5" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="datum">Datum</label>
+                        <input type="date" id="datum">
+                    </div>
+                    <div class="input-group">
+                        <label for="qualitaet">Qualität</label>
+                        <select id="qualitaet">
+                            <option value="" disabled selected>Bitte wählen</option>
+                            <option value="hoch">Hochwertig</option>
+                            <option value="standard">Standard</option>
+                            <option value="niedrig">Minderwertig</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="input-group">
-                <label for="datum">Datum</label>
-                <input type="date" id="datum">
+
+            <div class="action-buttons-row">
+                <button class="btn btn-icon" onclick="switchView('view-main')">✕</button>
+                <button id="btn-create" class="btn btn-neon-green" style="flex: 1; margin-left: 12px; margin-top: 0;">CREATE</button>
             </div>
-            <div class="input-group">
-                <label for="qualitaet">Qualität</label>
-                <select id="qualitaet">
-                    <option value="" disabled selected>Bitte wählen</option>
-                    <option value="hoch">Hochwertig</option>
-                    <option value="standard">Standard</option>
-                    <option value="niedrig">Minderwertig</option>
-                </select>
-            </div>
-            <button id="btn-create" class="btn btn-neon-green">QR Code generieren</button>
-            <button class="btn btn-blue" style="margin-top: 12px;" onclick="switchView('view-main')">Abbrechen</button>
         </div>
     </div>
 
     <div id="view-qr" class="app-wrapper">
         <div class="card">
-            <h2>Dein QR-Code</h2>
-            <div style="display: flex; justify-content: center; margin: 20px 0;">
+            <h2 id="qr-display-name" style="text-align: center; font-size: 1.5rem; margin-bottom: 5px; color: #111827;">---</h2>
+            <p style="text-align: center; font-size: 0.8rem; color: #6b7280; margin-bottom: 20px;">Vorschau bereit zum Speichern</p>
+            
+            <div style="display: flex; justify-content: center; margin-bottom: 24px;">
                 <canvas id="qr-canvas"></canvas>
             </div>
-            <button id="btn-save-qr" class="btn btn-neon-green">In Galerie speichern</button>
-            <button id="btn-save-history" class="btn btn-blue" style="margin-top: 12px;">In Historie speichern</button>
-            <button id="btn-back-from-qr" class="btn" style="margin-top: 12px; background-color: #f3f4f6; color: #374151;">Abbrechen</button>
+            
+            <button id="btn-save-qr" class="btn btn-blue" style="margin-bottom: 12px;">Save to Galerie</button>
+            
+            <div style="display: flex; gap: 12px;">
+                <button id="btn-delete-qr" class="btn" style="background-color: #ef4444; color: white; flex: 1;">Delete</button>
+                <button id="btn-save-history" class="btn btn-neon-green" style="flex: 1; margin-top: 0;">Save</button>
+            </div>
         </div>
     </div>
 
@@ -107,10 +130,11 @@
 
     <div id="view-scan-result" class="app-wrapper">
         <div class="card">
-            <h2>Gescannte Daten</h2>
+            <h2 id="res-name" style="font-size: 1.5rem; text-align: center; margin-bottom: 20px;">---</h2>
             <div class="stat-row"><span>Gewicht:</span><span id="res-gewicht"></span></div>
             <div class="stat-row"><span>Datum:</span><span id="res-datum"></span></div>
             <div class="stat-row"><span>Qualität:</span><span id="res-qualitaet"></span></div>
+            <div class="stat-row"><span>Status (Level):</span><span id="res-battery"></span></div>
             <button id="btn-back-from-res" class="btn btn-blue" style="margin-top: 24px;">Zurück zum Menü</button>
         </div>
     </div>
@@ -120,21 +144,20 @@
             <h2>Historie</h2>
             <button class="btn" style="width: auto; height: 32px; padding: 0 16px; font-size: 0.8rem; background-color: #f3f4f6; color: #374151;" onclick="switchView('view-main')">Zurück</button>
         </div>
-        <div id="history-list" style="width: 100%; display: flex; flex-direction: column; gap: 12px;">
-            </div>
+        <div id="history-list" style="width: 100%; display: flex; flex-direction: column; gap: 12px;"></div>
     </div>
 
     <div id="view-history-detail" class="app-wrapper">
         <div class="card">
-            <h2>Eintrag Details</h2>
-            <div style="display: flex; justify-content: center; margin: 20px 0;">
+            <h2 id="detail-name" style="text-align: center; margin-bottom: 20px;">---</h2>
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
                 <img id="detail-qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 1px solid #e5e7eb;">
             </div>
             <div class="stat-row"><span>Gewicht:</span><span id="detail-gewicht"></span></div>
             <div class="stat-row"><span>Datum:</span><span id="detail-datum"></span></div>
-            <div class="stat-row"><span>Status:</span><span id="detail-qualitaet"></span></div>
-
-            <button id="btn-detail-save" class="btn btn-neon-green" style="margin-top: 24px;">In Galerie speichern</button>
+            <div class="stat-row"><span>Qualität:</span><span id="detail-qualitaet"></span></div>
+            <div class="stat-row"><span>Status (Level):</span><span id="detail-battery"></span></div>
+            <button id="btn-detail-save" class="btn btn-blue" style="margin-top: 24px;">In Galerie speichern</button>
             <button id="btn-detail-delete" class="btn" style="margin-top: 12px; background-color: #ef4444; color: white;">Eintrag löschen</button>
             <button id="btn-detail-back" class="btn" style="margin-top: 12px; background-color: #f3f4f6; color: #374151;">Zurück</button>
         </div>
