@@ -84,6 +84,61 @@
             <button class="btn btn-blue" style="margin-top: 12px;" onclick="switchView('view-main')">Abbrechen</button>
         </div>
     </div>
+
+    <div id="view-qr" class="app-wrapper">
+        <div class="card">
+            <h2>Dein QR-Code</h2>
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <canvas id="qr-canvas"></canvas>
+            </div>
+            <button id="btn-save-qr" class="btn btn-neon-green">In Galerie speichern</button>
+            <button id="btn-save-history" class="btn btn-blue" style="margin-top: 12px;">In Historie speichern</button>
+            <button id="btn-back-from-qr" class="btn" style="margin-top: 12px; background-color: #f3f4f6; color: #374151;">Abbrechen</button>
+        </div>
+    </div>
+
+    <div id="view-scanner" class="app-wrapper">
+        <div class="card">
+            <h2>Code Scannen</h2>
+            <div id="reader" style="width: 100%; margin-bottom: 20px;"></div>
+            <button id="btn-cancel-scan" class="btn" style="background-color: #f3f4f6; color: #374151;">Abbrechen</button>
+        </div>
+    </div>
+
+    <div id="view-scan-result" class="app-wrapper">
+        <div class="card">
+            <h2>Gescannte Daten</h2>
+            <div class="stat-row"><span>Gewicht:</span><span id="res-gewicht"></span></div>
+            <div class="stat-row"><span>Datum:</span><span id="res-datum"></span></div>
+            <div class="stat-row"><span>Qualität:</span><span id="res-qualitaet"></span></div>
+            <button id="btn-back-from-res" class="btn btn-blue" style="margin-top: 24px;">Zurück zum Menü</button>
+        </div>
+    </div>
+
+    <div id="view-history" class="app-wrapper">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2>Historie</h2>
+            <button class="btn" style="width: auto; height: 32px; padding: 0 16px; font-size: 0.8rem; background-color: #f3f4f6; color: #374151;" onclick="switchView('view-main')">Zurück</button>
+        </div>
+        <div id="history-list" style="width: 100%; display: flex; flex-direction: column; gap: 12px;">
+            </div>
+    </div>
+
+    <div id="view-history-detail" class="app-wrapper">
+        <div class="card">
+            <h2>Eintrag Details</h2>
+            <div style="display: flex; justify-content: center; margin: 20px 0;">
+                <img id="detail-qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 1px solid #e5e7eb;">
+            </div>
+            <div class="stat-row"><span>Gewicht:</span><span id="detail-gewicht"></span></div>
+            <div class="stat-row"><span>Datum:</span><span id="detail-datum"></span></div>
+            <div class="stat-row"><span>Status:</span><span id="detail-qualitaet"></span></div>
+
+            <button id="btn-detail-save" class="btn btn-neon-green" style="margin-top: 24px;">In Galerie speichern</button>
+            <button id="btn-detail-delete" class="btn" style="margin-top: 12px; background-color: #ef4444; color: white;">Eintrag löschen</button>
+            <button id="btn-detail-back" class="btn" style="margin-top: 12px; background-color: #f3f4f6; color: #374151;">Zurück</button>
+        </div>
+    </div>
     <script src="app.js"></script>
     
 </body>
