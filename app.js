@@ -53,49 +53,86 @@ function switchView(viewId) {
     document.getElementById(viewId).classList.add('active');
 }
 
-// --- QR-Code Generierung & Speichern ---
+// --- Create Flow Logic (ID & Batterie) ---
 let currentQR = null;
+let currentBatteryLevel = 0;
 
+// Öffnet das Formular frisch
+function openCreateForm() {
+    // 7-stelligen Random String generieren
+    const randomId = Math.random().toString(36).substring(2, 9).toUpperCase();
+    document.getElementById('pack-name').value = randomId;
+    
+    // Formular und Batterie resetten
+    currentBatteryLevel = 0;
+    updateBatteryUI();
+    document.getElementById('gewicht').value = '';
+    document.getElementById('qualitaet').value = '';
+    document.getElementById('datum').valueAsDate = new Date();
+    
+    switchView('view-create-form');
+}
+
+// Batterie Klick-Logik
+document.querySelectorAll('.battery-segment').forEach(seg => {
+    seg.addEventListener('click', (e) => {
+        currentBatteryLevel = parseInt(e.target.dataset.val);
+        updateBatteryUI();
+    });
+});
+
+function updateBatteryUI() {
+    document.querySelectorAll('.battery-segment').forEach(seg => {
+        if (parseInt(seg.dataset.val) <= currentBatteryLevel) {
+            seg.classList.add('active');
+        } else {
+            seg.classList.remove('active');
+        }
+    });
+}
+
+// --- CREATE Button (Generiert QR, geht zur Vorschau) ---
 document.getElementById('btn-create').addEventListener('click', () => {
+    const name = document.getElementById('pack-name').value;
     const gewicht = document.getElementById('gewicht').value;
     const datum = document.getElementById('datum').value;
     const qualitaet = document.getElementById('qualitaet').value;
 
-    if (!gewicht || !datum || !qualitaet) {
-        alert("Bitte fülle alle Felder aus.");
+    if (!name || !gewicht || !datum || !qualitaet || currentBatteryLevel === 0) {
+        alert("Bitte fülle alle Felder aus und wähle den Batteriestatus links (1-6).");
         return;
     }
 
-// Daten als kompaktes JSON-Objekt vorbereiten
-    const dataObj = { g: gewicht, d: datum, q: qualitaet };
-    const dataString = JSON.stringify(dataObj);
+    // Erweitertes JSON-Objekt (n = name, b = battery)
+    const dataObj = { n: name, b: currentBatteryLevel, g: gewicht, d: datum, q: qualitaet };
+    const encryptedData = encryptData(JSON.stringify(dataObj));
 
-    // NEU: Daten symmetrisch verschlüsseln
-    const encryptedData = encryptData(dataString);
-
-    // QR Code generieren
     currentQR = new QRious({
         element: document.getElementById('qr-canvas'),
-        value: encryptedData, // NEU: Verschlüsselten String in den Code schreiben
+        value: encryptedData,
         size: 250,
         level: 'H'
     });
 
+    document.getElementById('qr-display-name').textContent = name;
     switchView('view-qr');
 });
 
-// QR-Code in Galerie speichern (Download)
+// --- QR Vorschau Buttons ---
+document.getElementById('btn-delete-qr').addEventListener('click', () => {
+    switchView('view-main'); // Bricht ab und geht zurück
+});
+
 document.getElementById('btn-save-qr').addEventListener('click', () => {
     const canvas = document.getElementById('qr-canvas');
     const image = canvas.toDataURL("image/png");
     const link = document.createElement('a');
     link.href = image;
-    link.download = `papier-qr-${document.getElementById('datum').value}.png`;
+    link.download = `${document.getElementById('pack-name').value}.png`;
     link.click();
 });
 
-// Zurück-Buttons
-document.getElementById('btn-back-from-qr').addEventListener('click', () => switchView('view-main'));
+// Zurück-Button für den Scan-Ergebnis-Screen (muss erhalten bleiben)
 document.getElementById('btn-back-from-res').addEventListener('click', () => switchView('view-main'));
 
 // --- Scanner Logik ---
@@ -128,15 +165,14 @@ function onScanSuccess(decodedText, decodedResult) {
     // Scanner sofort stoppen, wenn erfolgreich
     html5QrcodeScanner.stop().then(() => {
         try {
-            // NEU: Zuerst den gescannten Text entschlüsseln
             const decryptedText = decryptData(decodedText);
-            
-            if (!decryptedText) {
-                throw new Error("Entschlüsselung fehlgeschlagen.");
-            }
+            if (!decryptedText) throw new Error("Entschlüsselung fehlgeschlagen.");
 
-            // Daten aus dem entschlüsselten Text entpacken
             const dataObj = JSON.parse(decryptedText);
+            
+            // NEU: Name und Batterie ins HTML laden (mit Fallback für ganz alte Codes)
+            document.getElementById('res-name').textContent = dataObj.n || "Unbekanntes Pack";
+            document.getElementById('res-battery').textContent = dataObj.b ? `Level ${dataObj.b}` : "---";
             
             document.getElementById('res-gewicht').textContent = `${dataObj.g} kg`;
             document.getElementById('res-datum').textContent = dataObj.d;
@@ -196,38 +232,33 @@ function getHistory() {
     return historyData ? JSON.parse(historyData) : [];
 }
 
-function saveToHistory() {
+// Der ECHTE Save Button (speichert aus der Vorschau in die Historie)
+document.getElementById('btn-save-history').addEventListener('click', () => {
+    const name = document.getElementById('pack-name').value;
     const gewicht = document.getElementById('gewicht').value;
     const datum = document.getElementById('datum').value;
     const qualitaet = document.getElementById('qualitaet').value;
     const canvas = document.getElementById('qr-canvas');
-    
-    if (!gewicht || !datum || !qualitaet) {
-        alert("Bitte fülle alle Felder aus.");
-        return;
-    }
-
     const qrImageBase64 = canvas.toDataURL("image/png");
 
     const newEntry = {
         id: Date.now(),
+        name: name,
+        battery: currentBatteryLevel,
         gewicht: parseFloat(gewicht),
         datum: datum,
         qualitaet: qualitaet,
         qrImage: qrImageBase64,
-        sold: false // Standardmäßig ist neues Papier noch nicht verkauft
+        sold: false
     };
 
     const history = getHistory();
     history.unshift(newEntry);
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 
-    alert("Erfolgreich in der Historie gespeichert!");
-    updateDashboardStats(); 
-    switchView('view-main'); // Springt direkt sauber zurück ins Dashboard
-}
-
-document.getElementById('btn-save-history').addEventListener('click', saveToHistory);
+    updateDashboardStats();
+    switchView('view-main');
+});
 
 // --- Historie Rendern ---
 function renderHistory() {
@@ -264,7 +295,7 @@ function renderHistory() {
 // --- History Detail Logik ---
 let currentDetailId = null;
 
-function openHistoryDetail(id) {
+
     const history = getHistory();
     const entry = history.find(e => e.id === id);
     if (!entry) return;
